@@ -3,6 +3,7 @@ const dataController = require('./dataController');
 const userController = require('./userController');
 const plateController = require('./plateController');
 const circleController = require('./circleController');
+const addressController = require('./addressController');
 
 const router = (app) => {
 	// 登录相关
@@ -15,5 +16,7 @@ const router = (app) => {
 	app.use('/plate', plateController);
 	// 圈子相关
 	app.use('/circle', circleController);
+	// 地址相关
+	app.use('/address', addressController);
 };
 module.exports = router;

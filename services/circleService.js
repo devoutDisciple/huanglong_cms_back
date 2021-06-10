@@ -50,14 +50,7 @@ module.exports = {
 			const circles = await circleModal.findAndCountAll({
 				where: condition,
 				attributes: commonFields,
-				include: [
-					{
-						model: plateModal,
-						as: 'plateDetail',
-						attributes: ['id', 'name'],
-					},
-				],
-				order: [['hot', 'DESC']],
+				order: [['create_time', 'DESC']],
 				limit: pagesize,
 				offset,
 			});
@@ -67,10 +60,10 @@ module.exports = {
 			};
 			if (circles && circles.rows && circles.rows.length !== 0) {
 				result.count = circles.count;
-				result.list = responseUtil.renderFieldsAll(circles.rows, [...commonFields, 'plateDetail']);
+				result.list = responseUtil.renderFieldsAll(circles.rows, [...commonFields]);
 				result.list.forEach((item) => {
 					item.logo = config.preUrl.circleUrl + item.logo;
-					item.bg_url = config.preUrl.bgUrl + item.bg_url;
+					item.bg_url = config.preUrl.circleUrl + item.bg_url;
 					item.contentNum = Number(
 						Number(item.blogs) + Number(item.posts) + Number(item.vote) + Number(item.battle) + Number(item.videos),
 					).toFixed(0);
@@ -83,15 +76,31 @@ module.exports = {
 		}
 	},
 
-	// 删除模块
-	deleteById: async (req, res) => {
+	// 上传图片
+	uploadImg: async (req, res, filename) => {
 		try {
-			const { plate_id } = req.body;
-			if (!plate_id) return res.send(resultMessage.error('无效模块'));
-			await circleModal.destroy({
-				where: {
-					id: plate_id,
-				},
+			res.send(resultMessage.success(filename));
+		} catch (error) {
+			console.log(error);
+			res.send(resultMessage.error());
+		}
+	},
+
+	// 新增圈子
+	addCircle: async (req, res) => {
+		try {
+			const { name, plate_id, type, province, city, country, desc, logo, bg_url } = req.body;
+			await circleModal.create({
+				name,
+				plate_id,
+				type,
+				province,
+				city,
+				country,
+				desc,
+				logo,
+				bg_url,
+				create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
 			});
 			res.send(resultMessage.success('success'));
 		} catch (error) {
@@ -100,15 +109,15 @@ module.exports = {
 		}
 	},
 
-	// 新增模块
-	addPlate: async (req, res) => {
+	// 删除圈子
+	deleteCircle: async (req, res) => {
 		try {
-			const { name, sort, filename } = req.body;
-			await circleModal.create({
-				name,
-				url: filename,
-				sort,
-				create_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+			const { circle_id } = req.body;
+			if (!circle_id) return res.send(resultMessage.error('无效圈子'));
+			await circleModal.destroy({
+				where: {
+					id: circle_id,
+				},
 			});
 			res.send(resultMessage.success('success'));
 		} catch (error) {
@@ -131,16 +140,6 @@ module.exports = {
 			}
 			await circleModal.update(data, { where: { id } });
 			res.send(resultMessage.success('success'));
-		} catch (error) {
-			console.log(error);
-			res.send(resultMessage.error());
-		}
-	},
-
-	// 上传图标
-	uploadImg: async (req, res, filename) => {
-		try {
-			res.send(resultMessage.success(filename));
 		} catch (error) {
 			console.log(error);
 			res.send(resultMessage.error());
