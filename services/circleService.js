@@ -3,12 +3,37 @@ const moment = require('moment');
 const config = require('../config/config');
 const sequelize = require('../dataSource/MysqlPoolClass');
 const circle = require('../models/circle');
+const plate = require('../models/plate');
 const resultMessage = require('../util/resultMessage');
 const responseUtil = require('../util/responseUtil');
 
 const Op = Sequelize.Op;
 const circleModal = circle(sequelize);
+const plateModal = plate(sequelize);
+
+circleModal.belongsTo(plateModal, { foreignKey: 'plate_id', targetKey: 'id', as: 'plateDetail' });
+
 const pagesize = 10;
+const commonFields = [
+	'id',
+	'plate_id',
+	'name',
+	'desc',
+	'fellow',
+	'blogs',
+	'posts',
+	'vote',
+	'battle',
+	'videos',
+	'hot',
+	'type',
+	'province',
+	'city',
+	'country',
+	'logo',
+	'bg_url',
+	'create_time',
+];
 
 module.exports = {
 	// 分页获取圈子数据
@@ -21,30 +46,17 @@ module.exports = {
 					[Op.like]: `%${name}%`,
 				};
 			}
-			const commonFields = [
-				'id',
-				'plate_id',
-				'name',
-				'desc',
-				'fellow',
-				'blogs',
-				'posts',
-				'vote',
-				'battle',
-				'videos',
-				'hot',
-				'type',
-				'province',
-				'city',
-				'country',
-				'logo',
-				'bg_url',
-				'create_time',
-			];
 			const offset = Number((current - 1) * pagesize);
-			const plates = await circleModal.findAndCountAll({
+			const circles = await circleModal.findAndCountAll({
 				where: condition,
 				attributes: commonFields,
+				include: [
+					{
+						model: plateModal,
+						as: 'plateDetail',
+						attributes: ['id', 'name'],
+					},
+				],
 				order: [['hot', 'DESC']],
 				limit: pagesize,
 				offset,
@@ -53,12 +65,15 @@ module.exports = {
 				count: 0,
 				list: [],
 			};
-			if (plates && plates.rows && plates.rows.length !== 0) {
-				result.count = plates.count;
-				result.list = responseUtil.renderFieldsAll(plates.rows, commonFields);
+			if (circles && circles.rows && circles.rows.length !== 0) {
+				result.count = circles.count;
+				result.list = responseUtil.renderFieldsAll(circles.rows, [...commonFields, 'plateDetail']);
 				result.list.forEach((item) => {
 					item.logo = config.preUrl.circleUrl + item.logo;
 					item.bg_url = config.preUrl.bgUrl + item.bg_url;
+					item.contentNum = Number(
+						Number(item.blogs) + Number(item.posts) + Number(item.vote) + Number(item.battle) + Number(item.videos),
+					).toFixed(0);
 				});
 			}
 			res.send(resultMessage.success(result));

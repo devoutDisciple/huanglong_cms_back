@@ -26,6 +26,11 @@ router.get('/platesByPage', (req, res) => {
 	plateService.getPlatesByPage(req, res);
 });
 
+// 获取全部模块
+router.get('/allPlates', (req, res) => {
+	plateService.getAllPlates(req, res);
+});
+
 // 删除模块
 router.post('/deleteById', (req, res) => {
 	plateService.deleteById(req, res);

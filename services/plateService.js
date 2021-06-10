@@ -48,6 +48,23 @@ module.exports = {
 		}
 	},
 
+	// 分页获取板块数据
+	getAllPlates: async (req, res) => {
+		try {
+			const commonFields = ['id', 'name'];
+			const plates = await plateModal.findAll({
+				where: { is_delete: 1 },
+				attributes: commonFields,
+				order: [['sort', 'DESC']],
+			});
+			const result = responseUtil.renderFieldsAll(plates, ['id', 'name']);
+			res.send(resultMessage.success(result));
+		} catch (error) {
+			console.log(error);
+			res.send(resultMessage.error());
+		}
+	},
+
 	// 删除模块
 	deleteById: async (req, res) => {
 		try {
