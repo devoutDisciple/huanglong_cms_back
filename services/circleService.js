@@ -126,20 +126,39 @@ module.exports = {
 		}
 	},
 
-	// 编辑模块
-	editPlate: async (req, res) => {
+	// 编辑圈子
+	editCircle: async (req, res) => {
 		try {
-			const { id, name, sort, filename } = req.body;
+			const { id, name, plate_id, type, province, city, country, desc, logo, bg_url } = req.body;
 			const data = {
 				name,
-				sort,
-				update_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+				plate_id,
+				type,
+				province,
+				city,
+				country,
+				desc,
 			};
-			if (filename) {
-				data.url = filename;
-			}
+			if (logo) data.logo = logo;
+			if (bg_url) data.bg_url = bg_url;
 			await circleModal.update(data, { where: { id } });
 			res.send(resultMessage.success('success'));
+		} catch (error) {
+			console.log(error);
+			res.send(resultMessage.error());
+		}
+	},
+
+	// 获取所有圈子简略信息
+	getAllCirclesDetail: async (req, res) => {
+		try {
+			const circles = await circleModal.findAll({
+				where: { is_delete: 1 },
+				attributes: ['id', 'name'],
+				order: [['create_time', 'DESC']],
+			});
+			const result = responseUtil.renderFieldsAll(circles, ['id', 'name']);
+			res.send(resultMessage.success(result));
 		} catch (error) {
 			console.log(error);
 			res.send(resultMessage.error());

@@ -4,7 +4,7 @@ const ObjectUtil = require('../util/ObjectUtil');
 const config = require('../config/config');
 
 const router = express.Router();
-const circleService = require('../services/circleService');
+const contentService = require('../services/contentService');
 
 let filename = '';
 // 使用硬盘存储模式设置存放接收到的文件的路径以及文件名
@@ -21,34 +21,34 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ dest: config.circlePath, storage });
 
-// 分页获取圈子
-router.get('/circlesByPage', (req, res) => {
-	circleService.getCirclesByPage(req, res);
+// 分页获取内容
+router.get('/contentsByPage', (req, res) => {
+	contentService.getContentsByPage(req, res);
 });
 
 // 新增圈子
 router.post('/add', (req, res) => {
-	circleService.addCircle(req, res);
+	contentService.addCircle(req, res);
 });
 
 // 上传模块图片
 router.post('/upload', upload.single('file'), (req, res) => {
-	circleService.uploadImg(req, res, filename);
+	contentService.uploadImg(req, res, filename);
 });
 
 // 删除圈子
 router.post('/delete', (req, res) => {
-	circleService.deleteCircle(req, res);
+	contentService.deleteCircle(req, res);
 });
 
 // 编辑圈子
 router.post('/edit', (req, res) => {
-	circleService.editCircle(req, res);
+	contentService.editCircle(req, res);
 });
 
 // 获取所有圈子
 router.get('/circlesDetail', (req, res) => {
-	circleService.getAllCirclesDetail(req, res);
+	contentService.getAllCirclesDetail(req, res);
 });
 
 module.exports = router;
