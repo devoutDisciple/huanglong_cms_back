@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, Sequelize) {
+
+module.exports = (sequelize) => {
   return sequelize.define('message', {
     id: {
       autoIncrement: true,
@@ -62,7 +63,6 @@ module.exports = function(sequelize, Sequelize) {
           { name: "id" },
         ]
       },
-    ],
-    timestamps: false,
-    });
+    ]
+  });
 };
