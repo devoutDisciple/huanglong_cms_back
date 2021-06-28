@@ -5,6 +5,7 @@ const plateController = require('./plateController');
 const circleController = require('./circleController');
 const addressController = require('./addressController');
 const contentController = require('./contentController');
+const topicController = require('./topicController');
 
 const router = (app) => {
 	// 登录相关
@@ -19,6 +20,8 @@ const router = (app) => {
 	app.use('/circle', circleController);
 	// 地址相关
 	app.use('/address', addressController);
+	// 话题相关
+	app.use('/topic', topicController);
 	// 内容相关
 	app.use('/content', contentController);
 };

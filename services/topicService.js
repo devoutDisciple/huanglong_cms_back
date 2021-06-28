@@ -11,12 +11,12 @@ circleModal.hasMany(topicModal, { foreignKey: 'circle_id', targetKey: 'id', as: 
 
 module.exports = {
 	// 根据圈子id获取话题
-	getByCircleId: async (req, res) => {
+	getAllByCircleId: async (req, res) => {
 		try {
 			const { circle_id } = req.query;
 			const topics = await topicModal.findAll({
 				where: { circle_id, is_delete: 1 },
-				order: [['hot', 'DESC']],
+				order: [['sort', 'DESC']],
 			});
 			const result = responseUtil.renderFieldsAll(topics, ['id', 'name', 'hot']);
 			res.send(resultMessage.success(result));
