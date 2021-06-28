@@ -1,36 +1,50 @@
 const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = function(sequelize, Sequelize) {
   return sequelize.define('circle_feedback', {
     id: {
-      type: Sequelize.INTEGER(11),
+      autoIncrement: true,
+      type: Sequelize.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     user_id: {
-      type: Sequelize.INTEGER(11),
-      allowNull: true
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      comment: "用户id"
     },
     plate_id: {
-      type: Sequelize.INTEGER(11),
-      allowNull: true
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      comment: "模块id"
     },
     desc: {
       type: Sequelize.STRING(255),
-      allowNull: true
+      allowNull: true,
+      comment: "描述内容"
     },
     create_time: {
       type: Sequelize.DATE,
       allowNull: true
     },
     is_delete: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true,
-      defaultValue: '1'
+      defaultValue: 1
     }
   }, {
+    sequelize,
     tableName: 'circle_feedback',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+    ],
     timestamps: false,
     });
 };

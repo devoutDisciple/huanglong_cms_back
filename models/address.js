@@ -1,38 +1,51 @@
 const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = function(sequelize, Sequelize) {
   return sequelize.define('address', {
     id: {
-      type: Sequelize.INTEGER(11),
+      autoIncrement: true,
+      type: Sequelize.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     name: {
       type: Sequelize.STRING(255),
       allowNull: false
     },
     parent_id: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true
     },
     type: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true,
-      defaultValue: '1'
+      defaultValue: 1,
+      comment: "1-省 2-市 3-县"
     },
     sort: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true,
-      defaultValue: '1'
+      defaultValue: 1
     },
     is_delete: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true,
-      defaultValue: '1'
+      defaultValue: 1,
+      comment: "1-存在 2-删除"
     }
   }, {
+    sequelize,
     tableName: 'address',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+    ],
     timestamps: false,
     });
 };

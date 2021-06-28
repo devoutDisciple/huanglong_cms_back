@@ -1,33 +1,47 @@
 const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = function(sequelize, Sequelize) {
   return sequelize.define('album', {
     id: {
-      type: Sequelize.INTEGER(11),
+      autoIncrement: true,
+      type: Sequelize.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     user_id: {
-      type: Sequelize.INTEGER(11),
-      allowNull: false
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      comment: "用户id"
     },
     url: {
       type: Sequelize.STRING(255),
       allowNull: false,
-      defaultValue: '{}'
+      defaultValue: "{}"
     },
     create_time: {
       type: Sequelize.DATE,
-      allowNull: true
+      allowNull: true,
+      comment: "创建时间"
     },
     is_delete: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true,
-      defaultValue: '1'
+      defaultValue: 1,
+      comment: "1-存在 2-删除"
     }
   }, {
+    sequelize,
     tableName: 'album',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+    ],
     timestamps: false,
     });
 };

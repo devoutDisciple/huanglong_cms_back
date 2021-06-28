@@ -1,32 +1,44 @@
 const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = function(sequelize, Sequelize) {
   return sequelize.define('vote_record', {
     id: {
-      type: Sequelize.INTEGER(11),
+      autoIncrement: true,
+      type: Sequelize.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     user_id: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true
     },
     content_id: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true
     },
     select_items: {
       type: Sequelize.STRING(255),
       allowNull: true,
-      defaultValue: '[]'
+      defaultValue: "[]",
+      comment: "选择的第几项"
     },
     create_time: {
       type: Sequelize.DATE,
       allowNull: true
     }
   }, {
+    sequelize,
     tableName: 'vote_record',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+    ],
     timestamps: false,
     });
 };

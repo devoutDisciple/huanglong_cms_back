@@ -1,12 +1,11 @@
 const Sequelize = require('sequelize');
-
-module.exports = (sequelize) => {
+module.exports = function(sequelize, Sequelize) {
   return sequelize.define('register', {
     id: {
-      type: Sequelize.INTEGER(11),
+      autoIncrement: true,
+      type: Sequelize.INTEGER,
       allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+      primaryKey: true
     },
     phone: {
       type: Sequelize.STRING(11),
@@ -14,7 +13,7 @@ module.exports = (sequelize) => {
       primaryKey: true
     },
     security_code: {
-      type: Sequelize.INTEGER(11),
+      type: Sequelize.INTEGER,
       allowNull: true
     },
     password: {
@@ -30,7 +29,20 @@ module.exports = (sequelize) => {
       allowNull: true
     }
   }, {
+    sequelize,
     tableName: 'register',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+          { name: "phone" },
+        ]
+      },
+    ],
     timestamps: false,
     });
 };
