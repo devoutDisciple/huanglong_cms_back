@@ -35,7 +35,6 @@ module.exports = {
 	getContentsByPage: async (req, res) => {
 		try {
 			const { current = 1, circle, type, sort, startTime, endTime, username } = req.query;
-
 			const condition = { is_delete: 1 };
 			const order = [['create_time', 'DESC']];
 			if (username) {
@@ -138,38 +137,16 @@ module.exports = {
 		}
 	},
 
-	// 获取用户发布的东西
-	getContentsByUserId: async (req, res) => {
+	// 删除内容
+	deleteById: async (req, res) => {
 		try {
-			const { user_id, current = 1 } = req.query;
-			const offset = Number((current - 1) * pagesize);
-			if (!user_id) return res.send(resultMessage.error('请先登录'));
-			const userDetail = await userModal.findOne({ where: { id: user_id }, attributes: ['id', 'photo', 'school', 'username'] });
-			const contentList = await contentModal.findAll({
-				where: {
-					user_id,
-					is_delete: 1,
-				},
-				order: [['create_time', 'DESC']],
-				attributes: contentCommonFields,
-				limit: pagesize,
-				offset,
-			});
-			const result = [];
-			if (contentList && contentList.length !== 0) {
-				let len = contentList.length;
-				while (len > 0) {
-					len -= 1;
-					contentList[len].userDetail = responseUtil.renderFieldsObj(userDetail, ['id', 'photo', 'school', 'username']);
-					const obj = responseUtil.renderFieldsObj(contentList[len], [...contentCommonFields, 'userDetail']);
-					const content_id = contentList[len].id;
-					// 添加帖子或者pk的详情
-					const newObj = await handleContent(obj, user_id);
-					newObj.hotReply = await getHotReply(content_id, user_id);
-					result.unshift(newObj);
-				}
-			}
-			res.send(resultMessage.success(result));
+			const { contentId } = req.query;
+			// const contents = await contentModal.findOne({
+			// 	where: { id: contentId },
+			// 	attributes: ['id', 'type'],
+			// });
+			await contentModal.update({ is_delete: 2 }, { where: { id: contentId } });
+			res.send(resultMessage.success('success'));
 		} catch (error) {
 			console.log(error);
 			res.send(resultMessage.error());

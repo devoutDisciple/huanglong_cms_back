@@ -83,7 +83,7 @@ module.exports = {
 	// 处理内容返回的详情
 	handleContent: async (obj, user_id) => {
 		// post || blogs
-		if (obj.type === 1 || obj.type === 2) {
+		if (obj.type === 1 || obj.type === 2 || obj.type === 6) {
 			obj.postsDetail = await postsModal.findOne({
 				where: { id: obj.other_id },
 				attributes: ['id', 'title', 'desc', 'img_urls'],
@@ -98,10 +98,12 @@ module.exports = {
 		}
 		// vote
 		if (obj.type === 3) {
+			const voteFields = ['id', 'title', 'total', 'type', 'content'];
 			obj.voteDetail = await voteModal.findOne({
 				where: { id: obj.other_id },
+				attributes: voteFields,
 			});
-			obj.voteDetail = responseUtil.renderFieldsObj(obj.voteDetail, ['id', 'title', 'total', 'type', 'content']);
+			obj.voteDetail = responseUtil.renderFieldsObj(obj.voteDetail, voteFields);
 			obj.voteDetail.content = JSON.parse(obj.voteDetail.content) || [];
 			// 查看用户是否已经选择了某个
 			if (user_id && obj.id) {
@@ -116,17 +118,7 @@ module.exports = {
 		}
 		// battle
 		if (obj.type === 4) {
-			// 查看battle详情
-			obj.battleDetail = await battleModal.findOne({
-				where: { id: obj.other_id },
-			});
-			const dead_time = obj.battleDetail.dead_time;
-			obj.battleDetail.expire = false;
-			// 已经过期
-			if (!moment(dead_time).isAfter(moment(new Date()))) {
-				obj.battleDetail.expire = true;
-			}
-			obj.battleDetail = responseUtil.renderFieldsObj(obj.battleDetail, [
+			const battleFields = [
 				'id',
 				'title',
 				'red_name',
@@ -135,8 +127,21 @@ module.exports = {
 				'blue_name',
 				'blue_ticket',
 				'blue_url',
+				'type',
 				'dead_time',
-			]);
+			];
+			// 查看battle详情
+			obj.battleDetail = await battleModal.findOne({
+				where: { id: obj.other_id },
+				attributes: battleFields,
+			});
+			const dead_time = obj.battleDetail.dead_time;
+			obj.battleDetail.expire = false;
+			// 已经过期
+			if (!moment(dead_time).isAfter(moment(new Date()))) {
+				obj.battleDetail.expire = true;
+			}
+			obj.battleDetail = responseUtil.renderFieldsObj(obj.battleDetail, battleFields);
 			obj.battleDetail.red_url = JSON.parse(obj.battleDetail.red_url) || {};
 			obj.battleDetail.red_url.url = config.preUrl.battleUrl + obj.battleDetail.red_url.url;
 			obj.battleDetail.blue_url = JSON.parse(obj.battleDetail.blue_url) || {};
@@ -161,20 +166,25 @@ module.exports = {
 		}
 		// video
 		if (obj.type === 5) {
+			const videoFields = ['id', 'url', 'desc', 'photo', 'width', 'height', 'duration', 'size'];
 			obj.videoDetail = await videoModal.findOne({
 				where: { id: obj.other_id },
-				attributes: ['id', 'url', 'desc', 'photo'],
+				attributes: videoFields,
 			});
-			obj.videoDetail = responseUtil.renderFieldsObj(obj.videoDetail, ['id', 'url', 'desc', 'photo']);
+			obj.videoDetail = responseUtil.renderFieldsObj(obj.videoDetail, videoFields);
 			if (obj.videoDetail && obj.videoDetail.url) obj.videoDetail.url = config.preUrl.videoUrl + obj.videoDetail.url;
-			if (obj.videoDetail && obj.videoDetail.photo) obj.videoDetail.photo = config.preUrl.videoCoverUrl + obj.videoDetail.photo;
+			if (obj.videoDetail && obj.videoDetail.photo) {
+				const photo = JSON.parse(obj.videoDetail.photo);
+				photo.url = config.preUrl.videoCoverUrl + photo.url;
+				obj.videoDetail.photo = photo;
+			}
 		}
 		obj.circle_names = obj.circle_names ? JSON.parse(obj.circle_names) : [];
 		obj.topic_ids = obj.topic_ids ? JSON.parse(obj.topic_ids) : [];
 		obj.topic_names = obj.topic_names ? JSON.parse(obj.topic_names) : [];
 		obj.create_time = obj.create_time ? moment(obj.create_time).format(timeformat) : '';
 		if (obj.userDetail) {
-			obj.userDetail = responseUtil.renderFieldsObj(obj.userDetail, ['id', 'photo', 'school', 'username']);
+			obj.userDetail = responseUtil.renderFieldsObj(obj.userDetail, ['id', 'photo', 'school', 'username', 'integral']);
 			if (obj.userDetail.photo) obj.userDetail.photo = userUtil.getPhotoUrl(obj.userDetail.photo);
 		}
 		if (user_id && obj.userDetail && obj.userDetail.id) {
