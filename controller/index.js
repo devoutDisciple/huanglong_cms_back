@@ -6,6 +6,7 @@ const circleController = require('./circleController');
 const addressController = require('./addressController');
 const contentController = require('./contentController');
 const topicController = require('./topicController');
+const feedbackController = require('./feedbackController');
 
 const router = (app) => {
 	// 登录相关
@@ -24,5 +25,7 @@ const router = (app) => {
 	app.use('/topic', topicController);
 	// 内容相关
 	app.use('/content', contentController);
+	// 意见反馈
+	app.use('/feedback', feedbackController);
 };
 module.exports = router;

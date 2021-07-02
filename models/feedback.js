@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
-  return sequelize.define('circle_feedback', {
+  return sequelize.define('feedback', {
     id: {
       autoIncrement: true,
       type: Sequelize.INTEGER,
@@ -23,6 +23,12 @@ module.exports = (sequelize) => {
       allowNull: true,
       comment: "描述内容"
     },
+    type: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      defaultValue: 1,
+      comment: "1-圈子反馈 2-意见反馈"
+    },
     create_time: {
       type: Sequelize.DATE,
       allowNull: true
@@ -34,7 +40,7 @@ module.exports = (sequelize) => {
     }
   }, {
     sequelize,
-    tableName: 'circle_feedback',
+    tableName: 'feedback',
     timestamps: false,
     indexes: [
       {

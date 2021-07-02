@@ -25,7 +25,8 @@ module.exports = (sequelize) => {
     sort: {
       type: Sequelize.INTEGER,
       allowNull: true,
-      defaultValue: 1
+      defaultValue: 1,
+      comment: "排序"
     },
     is_delete: {
       type: Sequelize.INTEGER,

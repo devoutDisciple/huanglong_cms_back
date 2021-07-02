@@ -6,10 +6,10 @@ var _battle = require("./battle");
 var _battle_record = require("./battle_record");
 var _bg_img = require("./bg_img");
 var _circle = require("./circle");
-var _circle_feedback = require("./circle_feedback");
 var _comment_record = require("./comment_record");
 var _content = require("./content");
 var _data = require("./data");
+var _feedback = require("./feedback");
 var _goods_record = require("./goods_record");
 var _message = require("./message");
 var _notice = require("./notice");
@@ -33,10 +33,10 @@ function initModels(sequelize) {
   var battle_record = _battle_record(sequelize, Sequelize);
   var bg_img = _bg_img(sequelize, Sequelize);
   var circle = _circle(sequelize, Sequelize);
-  var circle_feedback = _circle_feedback(sequelize, Sequelize);
   var comment_record = _comment_record(sequelize, Sequelize);
   var content = _content(sequelize, Sequelize);
   var data = _data(sequelize, Sequelize);
+  var feedback = _feedback(sequelize, Sequelize);
   var goods_record = _goods_record(sequelize, Sequelize);
   var message = _message(sequelize, Sequelize);
   var notice = _notice(sequelize, Sequelize);
@@ -61,10 +61,10 @@ function initModels(sequelize) {
     battle_record,
     bg_img,
     circle,
-    circle_feedback,
     comment_record,
     content,
     data,
+    feedback,
     goods_record,
     message,
     notice,
