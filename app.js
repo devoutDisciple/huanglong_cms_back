@@ -1,3 +1,11 @@
+// const dash = require('appmetrics-dash');
+
+// // 监控前端性能
+// dash.monitor({
+// 	url: '/monitor',
+// 	port: 3335,
+// });
+
 const express = require('express');
 
 const app = express();
